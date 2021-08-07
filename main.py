@@ -68,6 +68,9 @@ async def md(ctx, link="help"): #Slash command function
         json_data = json.loads(response.text)
         title=json_data["data"]["attributes"]["title"]["en"]
         description=json_data["data"]["attributes"]["description"]["en"]
+        content_rating=json_data["data"]["attributes"]["contentRating"]
+        if content_rating=="pornographic":
+            title=f"{title} (NSFW)"
         cover_id=""
         relationships=json_data["relationships"]
 
@@ -88,8 +91,10 @@ async def md(ctx, link="help"): #Slash command function
         embed.set_author(
             name=ctx.author.display_name, 
             icon_url=ctx.author.avatar_url)
-
-        embed.set_image(url=f"https://uploads.mangadex.org/covers/{manga_id}/{cover_filename}")
+        if not content_rating=="pornographic":
+            embed.set_image(url=f"https://uploads.mangadex.org/covers/{manga_id}/{cover_filename}")
+        elif content_rating=="pornographic" and ctx.channel.is_nsfw():
+            embed.set_image(url=f"https://uploads.mangadex.org/covers/{manga_id}/{cover_filename}")
         embed.set_footer(text="Open sourced https://github.com/Parmethyst/MdexPreviewBot")
         print(title)
         print("")
