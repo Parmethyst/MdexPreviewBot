@@ -66,7 +66,7 @@ async def md(ctx, link="help"): #Slash command function
         manga_id=split_link[1]
         response = requests.get(f"https://api.mangadex.org/manga/{manga_id}")
         json_data = json.loads(response.text)
-        title=json_data["data"]["attributes"]["title"]["en"]
+        title=get_suitable_title_language(json_data)
         description=json_data["data"]["attributes"]["description"]["en"]
         content_rating=json_data["data"]["attributes"]["contentRating"]
         if content_rating=="pornographic":
@@ -120,7 +120,7 @@ async def md(ctx, link="help"): #Slash command function
 
         response = requests.get(f"https://api.mangadex.org/manga/{manga_id}")
         json_data = json.loads(response.text)
-        title=json_data["data"]["attributes"]["title"]["en"]
+        title=get_suitable_title_language(json_data)
 
         embed=discord.Embed(
             title=f"{title} (Ch: {chapter_number})",
@@ -165,7 +165,7 @@ async def md(ctx, link="help"): #Slash command function
 
         response = requests.get(f"https://api.mangadex.org/manga/{manga_id}")
         json_data = json.loads(response.text)
-        title=json_data["data"]["attributes"]["title"]["en"]
+        title=get_suitable_title_language(json_data)
 
         embed=discord.Embed(
             title=f"{title} (Ch: {chapter_number})",
@@ -178,5 +178,19 @@ async def md(ctx, link="help"): #Slash command function
         print(f"{title} (Ch: {chapter_number})")
         print("")
         await ctx.send(embed=embed)
+
+def get_suitable_title_language(json_data):
+    if "en" in json_data["data"]["attributes"]["title"]:
+        return json_data["data"]["attributes"]["title"]["en"]
+    elif "jp" in json_data["data"]["attributes"]["title"]:
+        return json_data["data"]["attributes"]["title"]["jp"]
+    elif "kr" in json_data["data"]["attributes"]["title"]:
+        return json_data["data"]["attributes"]["title"]["kr"]
+    elif "zh-hk" in json_data["data"]["attributes"]["title"]:
+        return json_data["data"]["attributes"]["title"]["zh-hk"]
+    elif "ru" in json_data["data"]["attributes"]["title"]:
+        return json_data["data"]["attributes"]["title"]["ru"]
+    else:
+        return "N/A"
 
 client.run(TOKEN)
