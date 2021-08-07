@@ -3,6 +3,7 @@ import os
 import requests
 import discord
 import json
+import re
 from dotenv import load_dotenv
 from discord_slash import SlashCommand
 from discord.ext import commands
@@ -25,14 +26,14 @@ async def on_slash_command_error(ctx, error):
         await ctx.send('You do not have permission to execute this command', hidden=True)
 
     else:
-       await ctx.send('Oops! Something went wrong, please report to Parmethyst#7954 or try again.', hidden=True)
+       await ctx.send('Oops! Something went wrong, please try again or report to Parmethyst#7954 if the issue persists.', hidden=True)
        raise error  # this will show some debug print in the console, when debugging
 
 @slash.slash(name="ping")
 async def _ping(ctx):
     await ctx.send(f"Pong! ({client.latency*1000}ms)")
 
-@slash.slash(
+@slash.slash( #Make a slash command
     name="md",
     description="Command to preview a mangadex link",
     options=[
@@ -43,14 +44,24 @@ async def _ping(ctx):
             required=False
         )
     ])
-async def md(ctx, link="help"):
+async def md(ctx, link="help"): #Slash command function
     print(f"{ctx.author.display_name}: {link}")
-    if link[-1]=='/':
-        link=link[:-1]
-    split_link=link.rsplit('/',2)[1:]
+
     if link=="help":
+        print("Usage help successfully sent")
+        print("")
         await ctx.send(content=f"Usage: /md [mangadex manga/chapter link without the brackets]")
-    elif split_link[0]=="title":
+        return
+    if not re.match(r"(https:\/\/mangadex.org\/)(title|chapter)\/([a-z\-0-9])+", link):
+        print("Not a mangadex link!")
+        print("")
+        await ctx.send('MangaDex link malformed! If this is not a typo please contact Parmethyst#7954.', hidden=True)
+        return
+
+    if link[-1]=='/': #if last character of link is slash then remove slash
+        link=link[:-1]
+    split_link=link.rsplit('/',2)[1:] #split link to parts divided by '/' character
+    if split_link[0]=="title":
 
         manga_id=split_link[1]
         response = requests.get(f"https://api.mangadex.org/manga/{manga_id}")
