@@ -79,6 +79,7 @@ async def md(ctx, link="help"):
             icon_url=ctx.author.avatar_url)
 
         embed.set_image(url=f"https://uploads.mangadex.org/covers/{manga_id}/{cover_filename}")
+        embed.set_footer(text="Open sourced https://github.com/Parmethyst/MdexPreviewBot")
         print(title)
         print("")
         await ctx.send(embed=embed)
@@ -112,6 +113,7 @@ async def md(ctx, link="help"):
             name=ctx.author.display_name, 
             icon_url=ctx.author.avatar_url)
         embed.set_image(url=f"{base_url}/data/{chapter_hash}/{chapter_page}")
+        embed.set_footer(text="Open sourced https://github.com/Parmethyst/MdexPreviewBot")
         print(f"{title} (Ch: {chapter_number})")
         print("")
         await ctx.send(embed=embed)
@@ -156,6 +158,7 @@ async def md(ctx, link="help"):
             name=ctx.author.display_name, 
             icon_url=ctx.author.avatar_url)
         embed.set_image(url=f"{base_url}/data/{chapter_hash}/{chapter_page}")
+        embed.set_footer(text="Open sourced https://github.com/Parmethyst/MdexPreviewBot")
         print(f"{title} (Ch: {chapter_number})")
         print("")
         await ctx.send(embed=embed)
