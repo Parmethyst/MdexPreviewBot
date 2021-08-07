@@ -95,7 +95,7 @@ async def md(ctx, link="help"): #Slash command function
             embed.set_image(url=f"https://uploads.mangadex.org/covers/{manga_id}/{cover_filename}")
         elif content_rating=="pornographic" and ctx.channel.is_nsfw():
             embed.set_image(url=f"https://uploads.mangadex.org/covers/{manga_id}/{cover_filename}")
-        embed.set_footer(text="Open sourced https://github.com/Parmethyst/MdexPreviewBot")
+        embed.set_footer(text="Source: https://github.com/Parmethyst/MdexPreviewBot")
         print(title)
         print("")
         await ctx.send(embed=embed)
@@ -129,7 +129,7 @@ async def md(ctx, link="help"): #Slash command function
             name=ctx.author.display_name, 
             icon_url=ctx.author.avatar_url)
         embed.set_image(url=f"{base_url}/data/{chapter_hash}/{chapter_page}")
-        embed.set_footer(text="Open sourced https://github.com/Parmethyst/MdexPreviewBot")
+        embed.set_footer(text="Source: https://github.com/Parmethyst/MdexPreviewBot")
         print(f"{title} (Ch: {chapter_number})")
         print("")
         await ctx.send(embed=embed)
@@ -174,7 +174,7 @@ async def md(ctx, link="help"): #Slash command function
             name=ctx.author.display_name, 
             icon_url=ctx.author.avatar_url)
         embed.set_image(url=f"{base_url}/data/{chapter_hash}/{chapter_page}")
-        embed.set_footer(text="Open sourced https://github.com/Parmethyst/MdexPreviewBot")
+        embed.set_footer(text="Source: https://github.com/Parmethyst/MdexPreviewBot")
         print(f"{title} (Ch: {chapter_number})")
         print("")
         await ctx.send(embed=embed)
