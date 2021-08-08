@@ -45,6 +45,7 @@ async def _ping(ctx):
         )
     ])
 async def md(ctx, link="help"): #Slash command function
+    link=link.lower()
     print(f"{ctx.author.display_name}: {link}")
 
     if link=="help":
