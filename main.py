@@ -101,45 +101,16 @@ async def md(ctx, link="help"): #Slash command function
         print("")
         await ctx.send(embed=embed)
 
-    elif split_link[0]=="chapter":
-        chapter_id=split_link[1]
-        response = requests.get(f"https://api.mangadex.org/chapter/{chapter_id}")
-        json_data=json.loads(response.text)
-        chapter_hash=json_data["data"]["attributes"]["hash"]
-        chapter_page=json_data["data"]["attributes"]["data"][0]
-        chapter_number=json_data["data"]["attributes"]["chapter"]
-        relationships=json_data["relationships"]
-        response = requests.get(f"https://api.mangadex.org/at-home/server/{chapter_id}")
-        json_data=json.loads(response.text)
-        base_url=json_data["baseUrl"]
-
-        manga_id=""
-        for relation in relationships:
-            if relation["type"]=="manga":
-                manga_id=relation["id"]
-                break
-
-        response = requests.get(f"https://api.mangadex.org/manga/{manga_id}")
-        json_data = json.loads(response.text)
-        title=get_suitable_title_language(json_data)
-
-        embed=discord.Embed(
-            title=f"{title} (Ch: {chapter_number})",
-            url=f"{link}")
-        embed.set_author(
-            name=ctx.author.display_name, 
-            icon_url=ctx.author.avatar_url)
-        embed.set_image(url=f"{base_url}/data/{chapter_hash}/{chapter_page}")
-        embed.set_footer(text="Code: https://github.com/Parmethyst/MdexPreviewBot")
-        print(f"{title} (Ch: {chapter_number})")
-        print("")
-        await ctx.send(embed=embed)
-
     else:
-        chapter_id=split_link[0]
-        requested_page=int(split_link[1])
+        chapter_id=''
+        requested_page=0
+        if split_link[0]=="chapter":
+            chapter_id=split_link[1]
+        else:
+            chapter_id=split_link[0]
+            requested_page=int(split_link[1])
 
-        if requested_page < 1:
+        if requested_page <= 0:
             requested_page=0
         else:
             requested_page=int(split_link[1])-1
