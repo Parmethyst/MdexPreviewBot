@@ -4,6 +4,7 @@ import requests
 import discord
 import json
 import re
+import time
 from dotenv import load_dotenv
 from discord_slash import SlashCommand
 from discord.ext import commands
@@ -26,8 +27,8 @@ async def on_slash_command_error(ctx, error):
         await ctx.send('You do not have permission to execute this command', hidden=True)
 
     else:
-       await ctx.send('Oops! Something went wrong, please try again or report to Parmethyst#7954 if the issue persists.', hidden=True)
-       raise error  # this will show some debug print in the console, when debugging
+        await ctx.send('Oops! Something went wrong, please try again or report to Parmethyst#7954 if the issue persists.', hidden=True)
+        raise error  # this will show some debug print in the console, when debugging
 
 @slash.slash(name="ping")
 async def _ping(ctx):
@@ -46,19 +47,18 @@ async def _ping(ctx):
     ])
 async def md(ctx, link="help"): #Slash command function
     link=link.lower()
-    print(f"{ctx.author.display_name}: {link}")
-
+    ts = time.localtime()
+    timeString=time.strftime("%Y-%m-%d %H:%M:%S", ts)
+    print(f"[{timeString}] {ctx.author.display_name}: {link}")
     if link=="help":
         print("Usage help successfully sent")
-        print("")
         await ctx.send(content=f"Usage: /md [mangadex manga/chapter link without the brackets]")
         return
     if not re.match(r"(https:\/\/mangadex.org\/)(title|chapter)\/([a-z\-0-9])+", link):
         print("Not a mangadex link!")
-        print("")
         await ctx.send('MangaDex link malformed! If this is not a typo please contact Parmethyst#7954.', hidden=True)
         return
-
+    await ctx.defer()
     if link[-1]=='/': #if last character of link is slash then remove slash
         link=link[:-1]
     split_link=link.rsplit('/',2)[1:] #split link to parts divided by '/' character
@@ -98,7 +98,6 @@ async def md(ctx, link="help"): #Slash command function
             embed.set_image(url=f"https://uploads.mangadex.org/covers/{manga_id}/{cover_filename}")
         embed.set_footer(text="Code: https://github.com/Parmethyst/MdexPreviewBot")
         print(title)
-        print("")
         await ctx.send(embed=embed)
 
     else:
@@ -148,7 +147,6 @@ async def md(ctx, link="help"): #Slash command function
         embed.set_image(url=f"{base_url}/data/{chapter_hash}/{chapter_page}")
         embed.set_footer(text="Code: https://github.com/Parmethyst/MdexPreviewBot")
         print(f"{title} (Ch: {chapter_number})")
-        print("")
         await ctx.send(embed=embed)
 
 def get_suitable_title_language(json_data):
