@@ -95,6 +95,7 @@ async def ds(ctx, link="help"): #Slash command function
     elif split_link[0]=="series" or split_link[0]=="anthologies" or split_link[0]=="issues":
         is_nsfw=False
         is_tags=False
+        is_cover=True
         response = requests.get(f"{link}.json")
         json_data = json.loads(response.text)
         title=json_data["name"]
@@ -103,8 +104,15 @@ async def ds(ctx, link="help"): #Slash command function
             description=""
         else:
             description=json_data["description"]
-        cover_url=json_data['cover'].partition("?")
-        cover_link=f"https://dynasty-scans.com{cover_url[0]}"
+        cover_url=""
+        cover_link=""
+        if json_data['cover'] is None:
+            is_cover=False
+        else:
+            cover_url=json_data['cover'].partition("?")
+            cover_link=f"https://dynasty-scans.com{cover_url[0]}"
+            is_cover=True
+
         tags=json_data["tags"]
         tags.sort(key=lambda x: x["type"], reverse=False)
         tag_list=list()
@@ -122,10 +130,11 @@ async def ds(ctx, link="help"): #Slash command function
         embed.set_author(
             name=ctx.author.display_name, 
             icon_url=ctx.author.avatar_url)
-        if not is_nsfw:
-            embed.set_image(url=f"{cover_link}")
-        elif is_nsfw and ctx.channel.is_nsfw():
-            embed.set_image(url=f"{cover_link}")
+        if is_cover:
+            if not is_nsfw:
+                embed.set_image(url=f"{cover_link}")
+            elif is_nsfw and ctx.channel.is_nsfw():
+                embed.set_image(url=f"{cover_link}")
         embed.set_footer(text="Code: https://github.com/Parmethyst/MdexPreviewBot")
         print(f"{title}")
         await ctx.send(embed=embed)
