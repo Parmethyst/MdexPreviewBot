@@ -79,6 +79,14 @@ async def ds(ctx, link="help"): #Slash command function
         if requested_page >= len(json_data["pages"]):
             requested_page=len(json_data["pages"])
         title=json_data["title"]
+        tags=json_data["tags"]
+        for tag in tags:
+            if tag["name"]=="NSFW":
+                is_nsfw=True
+            if tag["type"]=="Anthology" or tag["type"]=="Issue":
+                title=f"{json_data['title']} ({tag['name']})"
+            elif tag["type"]=="Doujin":
+                title=f"{json_data['title']} (Parody: {tag['name']})"
         page_image=json_data["pages"][requested_page-1]["url"]
         embed=discord.Embed(
             title=f"{title}",
