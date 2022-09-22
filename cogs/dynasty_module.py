@@ -36,14 +36,18 @@ class dynasty_module(commands.Cog):
 
       split_link=link.rsplit('/',2)[1:] #split link to parts divided by '/' character
       # print(split_link)
-
       if split_link[0]=="chapters":
+        is_nsfw=False
+        #print(split_link)
         requested_page=1
         chapter_permalink=""
         if re.match(r"([a-z\-0-9\-_])+#([0-9])+", split_link[1]):
             chapter_split=split_link[1].split('#')
+            #print(chapter_split) 
             chapter_permalink=chapter_split[0]
+            #print(chapter_permalink)
             requested_page=int(chapter_split[1])
+            #print(requested_page)
             if(requested_page<1): requested_page=1
         else:
             chapter_permalink=split_link[1]
@@ -57,7 +61,7 @@ class dynasty_module(commands.Cog):
         tags=json_data["tags"]
         for tag in tags:
             if tag["name"]=="NSFW":
-                is_nsfw=True
+                is_nsfw=True  
             if tag["type"]=="Anthology" or tag["type"]=="Issue":
                 title=f"{json_data['title']} ({tag['name']})"
             elif tag["type"]=="Doujin":
@@ -66,11 +70,14 @@ class dynasty_module(commands.Cog):
         embed=discord.Embed(
             title=f"{title}",
             url=f"{link}")
-        embed.add_field(name="Preview doesn't load?", value=f"[https://dynasty-scans.com{page_image}](https://dynasty-scans.com{page_image})")
+        if not is_nsfw:
+          embed.add_field(name="Preview doesn't load?", value=f"[https://dynasty-scans.com{page_image}](https://dynasty-scans.com{page_image})")
+          embed.set_image(url=f"https://dynasty-scans.com{page_image}")
+        elif is_nsfw:
+          embed.add_field(name="NSFW chapter, no preview.", value=f"[https://dynasty-scans.com{page_image}](https://dynasty-scans.com{page_image})")
         # embed.set_author(
         #     name=ctx.author.display_name,
         #     icon_url=ctx.author.avatar_url)
-        embed.set_image(url=f"https://dynasty-scans.com{page_image}")
         embed.set_footer(text="Code: https://github.com/Parmethyst/MdexPreviewBot")
         print(f"{title}")
         await interaction.followup.send(embed=embed)
